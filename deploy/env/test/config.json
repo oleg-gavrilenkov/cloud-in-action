@@ -1,0 +1,11 @@
+{
+    "Parameters": {
+        "Cluster": "ClusterESCStack",
+        "DesiredCount": "1",
+        "Role": "ECS-role",
+        "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-central-1:139563011941:targetgroup/LoadB-Targe-RPGSBCHOBA2D/df4c084d2d1e66ca",
+        "Image": {
+            "Fn::GetParam": ["BuildArtifact", "build.json", "Image"]
+        }
+    }
+}

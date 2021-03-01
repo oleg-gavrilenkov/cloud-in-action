@@ -1,1 +1,0 @@
-docker-compose -f docker-compose-hub.yml down

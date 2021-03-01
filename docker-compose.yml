@@ -6,4 +6,4 @@ services:
     build: cloud-service
     image: cloud-service-local
     ports: 
-      - 8080:8080
+      - 80:80

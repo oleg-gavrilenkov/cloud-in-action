@@ -1,0 +1,35 @@
+Parameters:
+  Cluster:
+    Type: String
+  DesiredCount:
+    Type: String
+  Image:
+    Type: String
+  Role:
+    Type: String
+  TargetGroupArn:
+    Type: String
+
+Resources:
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: !Ref DesiredCount
+      Role: !Ref Role
+      TaskDefinition: !Ref TaskDefinition
+      LoadBalancers:
+        - ContainerName: cloudInAction
+          ContainerPort: 80
+          TargetGroupArn: !Ref TargetGroupArn
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: Service
+      ContainerDefinitions:
+        - Name: cloudInAction
+          Image: !Ref Image
+          Memory: 256
+          PortMappings:
+            - ContainerPort: 80

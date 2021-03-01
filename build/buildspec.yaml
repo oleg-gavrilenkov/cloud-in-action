@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  pre_build:
+    commands:
+      - docker login -u $dockerhub_username -p $dockerhub_password
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+  build:
+    commands:
+      - mvn install -f cloud-service -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      - docker build -t $dockerhub_repository:latest cloud-service
+      - docker tag $dockerhub_repository:latest $dockerhub_repository:$IMAGE_TAG
+  post_build:
+    commands:
+      - docker push $dockerhub_repository:latest
+      - docker push $dockerhub_repository:$IMAGE_TAG
+      - printf '{"Image":"%s:%s"}' $dockerhub_repository $IMAGE_TAG > build.json
+
+reports:
+  SurefireReports:
+    files:
+      - '**/*'
+    base-directory: 'cloud-service/target/surefire-reports'
+
+artifacts:
+  files:
+    - build.json
+    - deploy/service.yml
+    - deploy/env/test/config.json
+  discard-paths: yes
