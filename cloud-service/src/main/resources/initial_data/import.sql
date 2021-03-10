@@ -1,0 +1,33 @@
+INSERT INTO categories (code, name) VALUES ("phones", "Mobile Phones");
+INSERT INTO categories (code, name) VALUES ("watches", "Watches");
+INSERT INTO categories (code, name) VALUES ("apple", "Apple");
+INSERT INTO categories (code, name) VALUES ("samsung", "Samsung");
+INSERT INTO categories (code, name) VALUES ("xiaomi", "Xiaomi");
+INSERT INTO categories (code, name) VALUES ("huawei", "Huawei");
+INSERT INTO categories (code, name) VALUES ("garmin", "Garmin");
+
+INSERT INTO products (code, name, price) VALUES ("note10", "Note 10", 11999.99);
+INSERT INTO products (code, name, price) VALUES ("galaxyS21", "Galaxy S21", 37999.99);
+INSERT INTO products (code, name, price) VALUES ("iphone11", "Iphone 11", 33999.99);
+INSERT INTO products (code, name, price) VALUES ("mi11", "Mi 11", 26999.99);
+INSERT INTO products (code, name, price) VALUES ("note9Pro", "Note 9 Pro", 6999.99);
+INSERT INTO products (code, name, price) VALUES ("redmi9c", "Redmi 9C", 3999.99);
+INSERT INTO products (code, name, price) VALUES ("watchS3", "Watch S3", 6299.99);
+INSERT INTO products (code, name, price) VALUES ("fenix6x", "Fenix 6X", 23999.99);
+
+INSERT INTO categories2products(category_code, product_code) VALUES ("phones", "note10");
+INSERT INTO categories2products(category_code, product_code) VALUES ("phones", "galaxyS21");
+INSERT INTO categories2products(category_code, product_code) VALUES ("samsung", "note10");
+INSERT INTO categories2products(category_code, product_code) VALUES ("samsung", "galaxyS21");
+INSERT INTO categories2products(category_code, product_code) VALUES ("phones", "iphone11");
+INSERT INTO categories2products(category_code, product_code) VALUES ("apple", "iphone11");
+INSERT INTO categories2products(category_code, product_code) VALUES ("phones", "mi11");
+INSERT INTO categories2products(category_code, product_code) VALUES ("phones", "note9Pro");
+INSERT INTO categories2products(category_code, product_code) VALUES ("phones", "redmi9c");
+INSERT INTO categories2products(category_code, product_code) VALUES ("xiaomi", "mi11");
+INSERT INTO categories2products(category_code, product_code) VALUES ("xiaomi", "note9Pro");
+INSERT INTO categories2products(category_code, product_code) VALUES ("xiaomi", "redmi9c");
+INSERT INTO categories2products(category_code, product_code) VALUES ("watches", "watchS3");
+INSERT INTO categories2products(category_code, product_code) VALUES ("apple", "watchS3");
+INSERT INTO categories2products(category_code, product_code) VALUES ("watches", "fenix6x");
+INSERT INTO categories2products(category_code, product_code) VALUES ("garmin", "fenix6x");
