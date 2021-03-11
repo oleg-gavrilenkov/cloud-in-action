@@ -30,6 +30,6 @@ Resources:
       ContainerDefinitions:
         - Name: cloudInAction
           Image: !Ref Image
-          Memory: 256
+          Memory: 512
           PortMappings:
             - ContainerPort: 80

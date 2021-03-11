@@ -70,6 +70,13 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+   			 <groupId>com.amazonaws.secretsmanager</groupId>
+   			 <artifactId>aws-secretsmanager-jdbc</artifactId>
+    		<version>1.0.6</version>
+    		<scope>runtime</scope>
+		</dependency>
 
 
 		<dependency>

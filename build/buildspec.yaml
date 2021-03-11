@@ -8,6 +8,9 @@ phases:
     commands:
       - docker login -u $dockerhub_username -p $dockerhub_password
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - PROPERTIES_FILE=cloud-service/src/main/resources/application.properties
+      - printf '\nspring.datasource.url=%s' $db_url >> $PROPERTIES_FILE
+      - printf '\nspring.datasource.username=%s' $db_secret >> $PROPERTIES_FILE
   build:
     commands:
       - mvn install -f cloud-service -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
