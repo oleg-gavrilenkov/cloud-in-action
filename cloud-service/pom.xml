@@ -19,6 +19,10 @@
 		<jpamodelgen.version>5.2.6.Final</jpamodelgen.version>
 		<orika.version>1.5.4</orika.version>
 		<common.collections.version>4.4</common.collections.version>
+		<secretsmanager.jdbc.version>1.0.6</secretsmanager.jdbc.version>
+		<junit.version>4.12</junit.version>
+		<random.beans.version>3.9.0</random.beans.version>
+		<assertj.core.version>3.19.0</assertj.core.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -74,14 +78,39 @@
 		<dependency>
    			 <groupId>com.amazonaws.secretsmanager</groupId>
    			 <artifactId>aws-secretsmanager-jdbc</artifactId>
-    		<version>1.0.6</version>
+    		<version>${secretsmanager.jdbc.version}</version>
     		<scope>runtime</scope>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.benas</groupId>
+			<artifactId>random-beans</artifactId>
+			<version>${random.beans.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.github.classgraph</groupId>
+					<artifactId>classgraph</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj.core.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -101,6 +130,50 @@
 						<processor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor,org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
 					</compilerArguments>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+				<executions>
+					<execution>
+						<id>unit-tests</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<skipTests>${skip.unit.tests}</skipTests>
+							<includes>
+								<include>**/*UnitTest.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<skipTests>${skip.integration.tests}</skipTests>
+							<includes>
+								<include>**/*IntegrationTest.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/AbstractControllerIntegrationTest.java</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
