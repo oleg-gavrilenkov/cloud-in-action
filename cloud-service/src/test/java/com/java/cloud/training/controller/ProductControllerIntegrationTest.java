@@ -9,6 +9,7 @@ import com.java.cloud.training.dto.product.ProductDto;
 import com.java.cloud.training.dto.product.UpdateProductDto;
 import com.java.cloud.training.entity.Category;
 import com.java.cloud.training.entity.Product;
+import com.java.cloud.training.mock.WithMockOAuth2Scope;
 import com.java.cloud.training.repository.ProductRepository;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.java.cloud.training.security.Scopes.FULL_ACCESS_SCOPE;
+import static com.java.cloud.training.security.Scopes.READ_ONLY_SCOPE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +35,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(1)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturnProductByCode() throws Exception {
         Product product = generatedProducts.get(0);
         MvcResult response = mockMvc.perform(get("/products/{productCode}", product.getCode())
@@ -47,6 +51,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(2)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn404Status_whenCategoryByCodeNotFound() throws Exception {
         mockMvc.perform(get("/products/{productCode}", "emptyProductCode")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -55,6 +60,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(3)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturnAllProductSortedByPriceAsc() throws Exception {
         MvcResult response = mockMvc.perform(get("/products")
                 .param("sort", "price,asc")
@@ -69,6 +75,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(4)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldFilterProductsByName() throws Exception {
         Product product = generatedProducts.get(0);
 
@@ -88,6 +95,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(5)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldUpdateProductByCode() throws Exception {
         Product product = generatedProducts.get(0);
         UpdateProductDto expectedDto = convertAndModifyDto(product);
@@ -105,6 +113,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(6)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn404Status_whenTryToUpdateNotExistingProduct() throws Exception {
         Product product = generatedProducts.get(0);
         UpdateProductDto expectedDto = convertAndModifyDto(product);
@@ -117,6 +126,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(7)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn404Status_whenTryToDeleteNotExistingProduct() throws Exception {
         mockMvc.perform(delete("/products/{productCode}", "emptyProductCode"))
                 .andExpect(status().isNotFound());
@@ -124,6 +134,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(8)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldDeleteProductByCode() throws Exception {
         String productCode = generatedProducts.get(0).getCode();
         mockMvc.perform(delete("/products/{productCode}", productCode))
@@ -137,6 +148,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(9)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldCreateProduct() throws Exception {
         ProductDto dto = testDataGenerator.generateRandomData(ProductDto.class);
         dto.setCategories(generatedCategories.stream().map(Category::getCode).collect(Collectors.toList()));
@@ -152,6 +164,7 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
 
     @Test
     @Order(10)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn409Status_whenTryToCreateProductWithExistingCode() throws Exception {
         ProductDto dto = testDataGenerator.generateRandomData(ProductDto.class);
         dto.setCategories(generatedCategories.stream().map(Category::getCode).collect(Collectors.toList()));
@@ -161,6 +174,15 @@ public class ProductControllerIntegrationTest extends AbstractControllerIntegrat
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    @Order(11)
+    @WithMockOAuth2Scope(scope = READ_ONLY_SCOPE)
+    void shouldReturn403Status_whenTryToDeleteProductAndScopeReadOnly() throws Exception {
+        String productCode = generatedProducts.get(0).getCode();
+        mockMvc.perform(delete("/products/{productCode}", productCode))
+                .andExpect(status().isForbidden());
     }
 
     private UpdateProductDto convertAndModifyDto(Product product) {

@@ -8,6 +8,7 @@ import com.java.cloud.training.dto.category.CategoryDto;
 import com.java.cloud.training.dto.category.UpdateCategoryDto;
 import com.java.cloud.training.entity.Category;
 import com.java.cloud.training.entity.Product;
+import com.java.cloud.training.mock.WithMockOAuth2Scope;
 import com.java.cloud.training.repository.CategoryRepository;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.java.cloud.training.security.Scopes.READ_ONLY_SCOPE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -23,6 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import static com.java.cloud.training.security.Scopes.FULL_ACCESS_SCOPE;
 
 @Transactional
 class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTest {
@@ -32,6 +36,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(1)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturnAllCategoriesSortedByProductsCountAsc() throws Exception {
         MvcResult response = mockMvc.perform(get("/categories")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -45,6 +50,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(2)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturnCategoryByCode() throws Exception {
         Category category = generatedCategories.get(0);
         MvcResult response = mockMvc.perform(get("/categories/{categoryCode}", category.getCode())
@@ -60,6 +66,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(3)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn404Status_whenCategoryByCodeNotFound() throws Exception {
         mockMvc.perform(get("/categories/{categoryCode}", "emptyCategoryCode")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -68,6 +75,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(4)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldFilterCategoriesByName() throws Exception {
         Category category = generatedCategories.get(0);
 
@@ -87,6 +95,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(5)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldUpdateCategoryByCode() throws Exception {
         Category category = generatedCategories.get(0);
         UpdateCategoryDto expectedDto = modifyAndConvertToDto(category);
@@ -103,6 +112,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(6)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn404Status_whenTryToUpdateNoExistingCategory() throws Exception {
         Category category = generatedCategories.get(1);
         UpdateCategoryDto expectedDto = modifyAndConvertToDto(category);
@@ -114,6 +124,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(7)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn404Status_whenTryToDeleteNoExistingCategory() throws Exception {
         mockMvc.perform(delete("/categories/{categoryCode}", "emptyCategoryCode"))
                 .andExpect(status().isNotFound());
@@ -121,6 +132,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(8)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldDeleteCategoryByCode() throws Exception {
         String categoryCode = generatedCategories.get(0).getCode();
         mockMvc.perform(delete("/categories/{categoryCode}", categoryCode))
@@ -134,6 +146,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(9)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldCreateCategory() throws Exception {
         CategoryDto dto = testDataGenerator.generateRandomData(CategoryDto.class);
         dto.setProducts(generatedProducts.stream().map(Product::getCode).collect(Collectors.toList()));
@@ -148,6 +161,7 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
 
     @Test
     @Order(10)
+    @WithMockOAuth2Scope(scope = FULL_ACCESS_SCOPE)
     void shouldReturn409Status_whenTryToCreateCategoryWithExistingCode() throws Exception {
         CategoryDto dto = testDataGenerator.generateRandomData(CategoryDto.class);
         dto.setProducts(generatedProducts.stream().map(Product::getCode).collect(Collectors.toList()));
@@ -157,7 +171,15 @@ class CategoryControllerIntegrationTest extends AbstractControllerIntegrationTes
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isConflict());
+    }
 
+    @Test
+    @Order(11)
+    @WithMockOAuth2Scope(scope = READ_ONLY_SCOPE)
+    void shouldReturn403Status_whenTryToDeleteCategoryAndScopeReadOnly() throws Exception{
+        String categoryCode = generatedCategories.get(0).getCode();
+        mockMvc.perform(delete("/categories/{categoryCode}", categoryCode))
+                .andExpect(status().isForbidden());
     }
 
     private UpdateCategoryDto modifyAndConvertToDto(Category category) {

@@ -15,8 +15,6 @@ import javax.validation.Valid;
 import com.java.cloud.training.dto.category.CategoryDto;
 import com.java.cloud.training.dto.category.UpdateCategoryDto;
 import com.java.cloud.training.dto.product.ProductDto;
-import com.java.cloud.training.dto.product.UpdateProductDto;
-import com.java.cloud.training.repository.CategoryRepository;
 import com.java.cloud.training.service.CategoryService;
 import com.java.cloud.training.service.ProductService;
 import com.java.cloud.training.service.data.CategorySearchData;
@@ -41,8 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
     @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
@@ -51,7 +47,9 @@ public class CategoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category found",
                          content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class))),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = "404", description = "Category not found"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @GetMapping("/{categoryCode}")
     public ResponseEntity<CategoryDto> getCategory(
@@ -63,7 +61,9 @@ public class CategoryController {
     @Operation(summary = "Find products related to category", description = "List of products", tags = {"category"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = "404", description = "Category not found"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @GetMapping(value = "/{categoryCode}/products", produces = {"application/json"})
     public ResponseEntity<List<ProductDto>> getCategoryProducts(@Parameter(description = "Code of category. Cannot be empty", required = true, example = "phones") @PathVariable String categoryCode,
@@ -86,7 +86,9 @@ public class CategoryController {
 
     @Operation(summary = "Get all categories", tags = {"category"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryDto.class))))
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryDto.class)))),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @GetMapping(produces = {"application/json"})
     public ResponseEntity<List<CategoryDto>> getCategories(@Parameter(description = "Name of category to search (like)", example = "Watches") @RequestParam(required = false) String name,
@@ -103,7 +105,9 @@ public class CategoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Category created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "409", description = "Category already exists")
+            @ApiResponse(responseCode = "409", description = "Category already exists"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @PostMapping
     public ResponseEntity<Void> createCategory(@Parameter(description = "Category to be created", required = true, schema = @Schema(implementation = CategoryDto.class))
@@ -115,7 +119,9 @@ public class CategoryController {
     @Operation(summary = "Delete category by code", tags = {"category"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category deleted"),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = "404", description = "Category not found"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @DeleteMapping("/{categoryCode}")
     public ResponseEntity<Void> deleteCategory(
@@ -128,7 +134,9 @@ public class CategoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation"),
             @ApiResponse(responseCode = "404", description = "Category not found"),
-            @ApiResponse(responseCode = "405", description = "Validation exception")
+            @ApiResponse(responseCode = "405", description = "Validation exception"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @PutMapping(value = "/{categoryCode}", produces = {"application/json"})
     public ResponseEntity<Void> updateCategory(@Parameter(description = "Code of category to be updated. Cannot be empty", required = true, example = "phones") @PathVariable String categoryCode

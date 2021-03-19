@@ -43,7 +43,9 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product found",
                          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class))),
-            @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @GetMapping("/{productCode}")
     public ResponseEntity<ProductDto> getProduct(
@@ -55,7 +57,9 @@ public class ProductController {
     @Operation(summary = "Delete product by code", tags = {"product"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product deleted"),
-            @ApiResponse(responseCode = "404", description = "Product not found")
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @DeleteMapping("/{productCode}")
     public ResponseEntity<Void> deleteProduct(
@@ -68,7 +72,9 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created"),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "409", description = "Product already exists")
+            @ApiResponse(responseCode = "409", description = "Product already exists"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @PostMapping
     public ResponseEntity<Void> createProduct(@Parameter(description = "Product to be created", required = true, schema = @Schema(implementation = ProductDto.class))
@@ -79,7 +85,9 @@ public class ProductController {
 
     @Operation(summary = "Get all products", tags = {"product"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProductDto.class))))
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @GetMapping(produces = {"application/json"})
     public ResponseEntity<List<ProductDto>> getProducts(@Parameter(description = "Name of product to search (like)", example = "redmi") @RequestParam(required = false) String name,
@@ -101,7 +109,9 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation"),
             @ApiResponse(responseCode = "404", description = "Product not found"),
-            @ApiResponse(responseCode = "405", description = "Validation exception")
+            @ApiResponse(responseCode = "405", description = "Validation exception"),
+            @ApiResponse(responseCode = "401", description = "Not authorized request"),
+            @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @PutMapping(value = "/{productCode}", produces = {"application/json"})
     public ResponseEntity<Void> updateProduct(@Parameter(description = "Code of product to be updated. Cannot be empty", required = true, example = "mi10T") @PathVariable String productCode
