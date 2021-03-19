@@ -1,0 +1,11 @@
+version: "3.4"
+
+services:
+
+  cloud-service:
+    image: oleggavrilenkov/cloud-service-client-machine:latest
+    ports: 
+      - 80:80
+    environment:
+      CLIENT_ID: "${CLIENT_ID}"
+      CLIENT_SECRET: "${CLIENT_SECRET}"
