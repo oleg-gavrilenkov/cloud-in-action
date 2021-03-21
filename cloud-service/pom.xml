@@ -68,6 +68,12 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>${common.collections.version}</version>
 		</dependency>
+		
+		<dependency>
+	   		<groupId>org.flywaydb</groupId>
+	   		<artifactId>flyway-core</artifactId>
+	   		<!-- <version>5.2.4</version> -->
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -87,6 +93,18 @@
     		<version>${secretsmanager.jdbc.version}</version>
     		<scope>runtime</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.github.benas</groupId>
+			<artifactId>random-beans</artifactId>
+			<version>${random.beans.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.github.classgraph</groupId>
+					<artifactId>classgraph</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -105,18 +123,6 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.github.benas</groupId>
-			<artifactId>random-beans</artifactId>
-			<version>${random.beans.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.github.classgraph</groupId>
-					<artifactId>classgraph</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
