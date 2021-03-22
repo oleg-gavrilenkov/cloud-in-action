@@ -1,0 +1,62 @@
+<div class="main">
+
+  <div class="menu">
+    <ol class="breadcrumb float-right">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/products">Products</a></li>
+      <li class="breadcrumb-item active">Categories</li>
+    </ol>
+  </div>
+
+  <div class="content">
+    <div class="card">
+      <div class="header">
+        <h2 class="title">Category Details</h2>
+      </div>
+      <div>
+        <div *ngIf="feedback" class="alert alert-{{feedback.type}}">{{ feedback.message }}</div>
+        <form *ngIf="category" #editForm="ngForm" (ngSubmit)="save()">
+        
+          <div class="form-group-edit" *ngIf="id == 'new'">
+            <label>Code:</label>
+            <input [(ngModel)]="category.code" id="code" name="code" class="form-control">
+          </div>
+        
+          <div class="form-group-edit">
+            <label for="name">Name:</label>
+            <input [(ngModel)]="category.name" id="name" name="name" class="form-control">
+          </div>
+        
+          <div class="form-group-edit-flex">
+
+            <label for="products">Products</label>
+            
+            <table id="products">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of category.products;let i = index">
+                  <td><a routerLink="/products/{{item}}">{{item}}</a></td>
+                  <td><button class="btn btn-danger" type="button" (click)="unlinkProductFromCategory(i)">Unlink Product</button></td> 
+                </tr>
+                <tr>
+                  <td><input type="text" id="productCodeToAdd"></td>
+                  <td><button type="button" (click)="linkProductToCategory()">Link Product</button></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        
+          <button type="submit" class="btn btn-primary" [disabled]="!editForm.form.valid">Save</button>
+          <button type="button" class="btn btn-secondary" (click)="refresh()">Refresh</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+version: "3.4"
+
+services:
+
+  server:
+    build: .
+    image: cloud-service-web-client
+    ports:
+      - 443:4200
+    volumes:
+      - ./data/certs:/etc/nginx/certs
+    environment: 
+      WEB_CLIENT_ID: "${WEB_CLIENT_ID}"

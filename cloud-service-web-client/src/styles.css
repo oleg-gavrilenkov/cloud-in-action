@@ -1,0 +1,96 @@
+/* You can add global styles to this file, and also import other style files */
+
+#datatable {
+    table-layout: fixed;
+    width: 70%;
+    border-collapse: collapse;
+    border: 3px solid purple;
+  }
+  
+ .td-padding {
+    padding: 10px;
+  }
+
+  html {
+    font-family: 'helvetica neue', helvetica, arial, sans-serif;
+  }
+  
+  #datatable > thead th, tfoot th {
+    font-family: 'Rock Salt', cursive;
+  }
+  
+  #datatable > th {
+    letter-spacing: 2px;
+  }
+  
+  #datatable > td {
+    letter-spacing: 1px;
+  }
+  
+  #datatable > tbody td {
+    text-align: center;
+  }
+  
+  #datatable > tfoot th {
+    text-align: right;
+  }
+
+  .form-group {
+      padding: 5px;
+      width: 25%;
+  }
+
+  .form-group > input,select {
+      float: right;
+  }
+
+  .action_buttons {
+      padding: 10px;
+      width: 25%;
+  }
+
+  .action_buttons > .btn-primary {
+      float: right;
+  }
+
+  .action_buttons > .btn-default {
+    float: left;
+  }
+
+  .card {
+      padding-top: 20px;
+  }
+
+  .main {
+      width: 100%;
+      position: relative;
+  }
+
+  .menu {
+      width: 20%;
+      position: absolute;
+  }
+
+  .content {
+      width: 80%;
+      position: absolute;
+      top: 5%;
+      left: 20%;
+  }
+
+  .form-group-edit {
+    padding: 5px;
+    width: 17%;
+  }
+
+  .form-group-edit >  input {
+    float: right;
+  }
+
+  .form-group-edit-flex {
+    display: flex;
+    align-items: flex-start;
+ }
+
+
+

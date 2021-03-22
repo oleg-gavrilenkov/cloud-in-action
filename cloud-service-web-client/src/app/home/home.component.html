@@ -1,0 +1,8 @@
+<div style="position: absolute; top: 20%; left: 40%;">
+    <p *ngIf="!isAuthenticated">You're not authorized. Please login.</p>
+    <p *ngIf="isAuthenticated">You're authorized.</p>
+    <button *ngIf="!isAuthenticated" (click)="oktaAuth.signInWithRedirect()">Login</button>
+    <p><a routerLink="/products" *ngIf="isAuthenticated">View Products</a></p>
+    <p><a routerLink="/categories" *ngIf="isAuthenticated">View Categories</a></p>
+    <button *ngIf="isAuthenticated" (click)="logout()">Logout</button>
+</div>

@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,6 +17,8 @@ import com.java.cloud.training.repository.ProductRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Component
 public class CategoryMapper extends ConfigurableMapper {
@@ -47,12 +50,12 @@ public class CategoryMapper extends ConfigurableMapper {
 
         @Override
         public void mapBtoA(CategoryDto categoryDto, Category category, MappingContext context) {
-            if (CollectionUtils.isEmpty(categoryDto.getProducts())) {
-                return;
-            }
-
-            Set<Product> products = productRepository.findByCodeIn(categoryDto.getProducts());
-            category.setProducts(products);
+            category.setProducts(getNewProducts(categoryDto));
+        }
+        
+        private Set<Product> getNewProducts(CategoryDto categoryDto) {
+        	List<String> productsCodes = categoryDto.getProducts();
+        	return isEmpty(productsCodes) ? new HashSet<>() : productRepository.findByCodeIn(productsCodes);
         }
 
     }
