@@ -41,38 +41,39 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
 			<artifactId>orika-core</artifactId>
-			<version>${orika.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-		    <groupId>org.springdoc</groupId>
-   			<artifactId>springdoc-openapi-ui</artifactId>
-   			<version>${springdoc.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
-			<version>${common.collections.version}</version>
 		</dependency>
 		
 		<dependency>
 	   		<groupId>org.flywaydb</groupId>
 	   		<artifactId>flyway-core</artifactId>
-	   		<version>5.2.4</version>
+<!--	   		<version>5.2.4</version>-->
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.benas</groupId>
+			<artifactId>random-beans</artifactId>
 		</dependency>
 
 		<dependency>
@@ -86,24 +87,17 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<dependency>
    			 <groupId>com.amazonaws.secretsmanager</groupId>
    			 <artifactId>aws-secretsmanager-jdbc</artifactId>
-    		<version>${secretsmanager.jdbc.version}</version>
     		<scope>runtime</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.github.benas</groupId>
-			<artifactId>random-beans</artifactId>
-			<version>${random.beans.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.github.classgraph</groupId>
-					<artifactId>classgraph</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -121,17 +115,61 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>${assertj.core.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-ui</artifactId>
+				<version>${springdoc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ma.glasnost.orika</groupId>
+				<artifactId>orika-core</artifactId>
+				<version>${orika.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>${common.collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.benas</groupId>
+				<artifactId>random-beans</artifactId>
+				<version>${random.beans.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>io.github.classgraph</groupId>
+						<artifactId>classgraph</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.amazonaws.secretsmanager</groupId>
+				<artifactId>aws-secretsmanager-jdbc</artifactId>
+				<version>${secretsmanager.jdbc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>${assertj.core.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>

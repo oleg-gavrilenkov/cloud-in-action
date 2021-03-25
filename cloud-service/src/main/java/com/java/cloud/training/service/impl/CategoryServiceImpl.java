@@ -34,12 +34,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategory(String code) {
-        Optional<Category> categoryOptional = categoryRepository.findByCode(code);
-        if (categoryOptional.isPresent()) {
-            return categoryMapper.map(categoryOptional.get(), CategoryDto.class);
-        } else {
-            throw new EntityNotFoundException("Category with code " + code + " not found");
-        }
+        return categoryRepository.findByCode(code)
+                .map(category -> categoryMapper.map(category, CategoryDto.class))
+                .orElseThrow(() -> new EntityNotFoundException("Category with code " + code + " not found"));
     }
 
     @Override
@@ -47,33 +44,30 @@ public class CategoryServiceImpl implements CategoryService {
         Specification<Category> searchSpecification = nameContain(categorySearchData.getName());
         Sort sort = parseSort(categorySearchData.getSort(), DEFAULT_SORT);
 
-        Sort.Order orderByProducts = sort.getOrderFor("products");
-        List<Category> categories;
-        if (nonNull(orderByProducts)) {
-             searchSpecification = searchSpecification.and(orderByProductsCount(orderByProducts.getDirection()));
-            categories = categoryRepository.findAll(searchSpecification);
-        } else {
-            categories = categoryRepository.findAll(searchSpecification, sort);
-        }
-
+        List<Category> categories = getCategories(searchSpecification, sort);
         return categoryMapper.mapAsList(categories, CategoryDto.class);
     }
 
     @Override
-    public void createCategory(CategoryDto dto) {
-        Optional<Category> categoryOptional = categoryRepository.findByCode(dto.getCode());
-        if (categoryOptional.isPresent()) {
+    public CategoryDto createCategory(CategoryDto dto) {
+        if (categoryRepository.findByCode(dto.getCode()).isPresent()) {
             throw new EntityAlreadyExistsException("Category with code " + dto.getCode() + " already exists");
+        } else {
+            Category category = categoryMapper.map(dto, Category.class);
+            categoryRepository.save(category);
+            return categoryMapper.map(category, CategoryDto.class);
         }
-        Category category = categoryMapper.map(dto, Category.class);
-        categoryRepository.save(category);
     }
 
     @Override
     public void deleteCategory(String code) {
-        Optional<Category> categoryOptional = categoryRepository.findByCode(code);
-        categoryOptional.ifPresentOrElse(categoryRepository::delete,
-                                         () -> { throw new EntityNotFoundException("Category with code " + code + " not found");});
+        categoryRepository.findByCode(code)
+                .ifPresentOrElse(
+                        categoryRepository::delete,
+                        () -> {
+                            throw new EntityNotFoundException("Category with code " + code + " not found");
+                        }
+                );
     }
 
     @Override
@@ -86,5 +80,18 @@ public class CategoryServiceImpl implements CategoryService {
                         },
                         () -> { throw new EntityNotFoundException("Product with code " + dto.getCode() + " not found");}
                 );
+    }
+
+    private List<Category> getCategories(Specification<Category> searchSpecification, Sort sort) {
+        Sort.Order orderByProducts = sort.getOrderFor("products");
+
+        List<Category> categories;
+        if (nonNull(orderByProducts)) {
+            searchSpecification = searchSpecification.and(orderByProductsCount(orderByProducts.getDirection()));
+            categories = categoryRepository.findAll(searchSpecification);
+        } else {
+            categories = categoryRepository.findAll(searchSpecification, sort);
+        }
+        return categories;
     }
 }

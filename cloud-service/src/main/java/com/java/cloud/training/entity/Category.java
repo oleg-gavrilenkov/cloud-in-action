@@ -1,11 +1,11 @@
 package com.java.cloud.training.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,6 +23,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "categories")
 public class Category implements Serializable {
 
@@ -31,6 +32,7 @@ public class Category implements Serializable {
     private Long id;
     @NotBlank
     @Column(unique = true)
+    @EqualsAndHashCode.Include
     private String code;
     @NotBlank
     private String name;
@@ -54,16 +56,4 @@ public class Category implements Serializable {
         getProducts().remove(product);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return getCode().equals(category.getCode());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getCode());
-    }
 }

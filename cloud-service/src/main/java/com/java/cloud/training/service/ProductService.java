@@ -12,7 +12,7 @@ public interface ProductService {
     ProductDto getProduct(String code);
 
     @Transactional
-    void createProduct(ProductDto dto);
+    ProductDto createProduct(ProductDto dto);
 
     @Transactional
     void deleteProduct(String code);

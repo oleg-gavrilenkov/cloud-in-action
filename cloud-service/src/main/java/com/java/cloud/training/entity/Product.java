@@ -1,12 +1,12 @@
 package com.java.cloud.training.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "products")
 public class Product implements Serializable {
 
@@ -30,6 +31,7 @@ public class Product implements Serializable {
     private Long id;
     @NotBlank
     @Column(unique = true)
+    @EqualsAndHashCode.Include
     private String code;
     @NotBlank
     private String name;
@@ -43,23 +45,4 @@ public class Product implements Serializable {
         categories.forEach(category -> category.addProduct(this));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (getId() == null) {
-            return false;
-        }
-        Product product = (Product) o;
-        return getCode().equals(product.getCode());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getCode());
-    }
 }

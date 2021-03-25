@@ -41,29 +41,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProduct(String code) {
-        Optional<Product> productOptional = productRepository.findByCode(code);
-        if (productOptional.isPresent()) {
-            return productMapper.map(productOptional.get(), ProductDto.class);
-        } else {
-            throw new EntityNotFoundException("Product with code " + code + " not found");
-        }
+       return productRepository.findByCode(code)
+                .map(product -> productMapper.map(product, ProductDto.class))
+                .orElseThrow(() -> new EntityNotFoundException("Product with code " + code + " not found"));
     }
 
     @Override
-    public void createProduct(ProductDto dto) {
-        Optional<Product> productOptional = productRepository.findByCode(dto.getCode());
-        if (productOptional.isPresent()) {
+    public ProductDto createProduct(ProductDto dto) {
+        if (productRepository.findByCode(dto.getCode()).isPresent()) {
             throw new EntityAlreadyExistsException("Product with code " + dto.getCode() + " already exists");
+        } else {
+            Product product = productMapper.map(dto, Product.class);
+            productRepository.save(product);
+            return productMapper.map(product, ProductDto.class);
         }
-        Product product = productMapper.map(dto, Product.class);
-        productRepository.save(product);
     }
 
     @Override
     public void deleteProduct(String code) {
-        Optional<Product> productOptional = productRepository.findByCode(code);
-        productOptional.ifPresentOrElse(productRepository::delete,
-                                        () -> {throw new EntityNotFoundException("Product with code " + code + " not found");});
+        productRepository.findByCode(code)
+                .ifPresentOrElse(
+                        productRepository::delete,
+                        () -> {
+                            throw new EntityNotFoundException("Product with code " + code + " not found");
+                        }
+                );
     }
 
     @Override

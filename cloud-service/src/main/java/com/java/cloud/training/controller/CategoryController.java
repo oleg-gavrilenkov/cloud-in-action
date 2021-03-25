@@ -15,12 +15,14 @@ import javax.validation.Valid;
 import com.java.cloud.training.dto.category.CategoryDto;
 import com.java.cloud.training.dto.category.UpdateCategoryDto;
 import com.java.cloud.training.dto.product.ProductDto;
+import com.java.cloud.training.payroll.CategoryDtoAssembler;
 import com.java.cloud.training.service.CategoryService;
 import com.java.cloud.training.service.ProductService;
 import com.java.cloud.training.service.data.CategorySearchData;
 import com.java.cloud.training.service.data.ProductSearchData;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,6 +45,8 @@ public class CategoryController {
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CategoryDtoAssembler categoryDtoAssembler;
 
     @Operation(summary = "Find category by code", description = "Returns a single category", tags = {"category"})
     @ApiResponses(value = {
@@ -110,10 +115,11 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @PostMapping
-    public ResponseEntity<Void> createCategory(@Parameter(description = "Category to be created", required = true, schema = @Schema(implementation = CategoryDto.class))
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public EntityModel<CategoryDto> createCategory(@Parameter(description = "Category to be created", required = true, schema = @Schema(implementation = CategoryDto.class))
                                               @Valid @RequestBody CategoryDto categoryDto) {
-        categoryService.createCategory(categoryDto);
-        return new ResponseEntity(HttpStatus.CREATED);
+        CategoryDto createdCategoryDto = categoryService.createCategory(categoryDto);
+        return categoryDtoAssembler.toModel(createdCategoryDto);
     }
 
     @Operation(summary = "Delete category by code", tags = {"category"})

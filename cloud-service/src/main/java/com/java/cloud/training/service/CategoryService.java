@@ -12,7 +12,7 @@ public interface CategoryService {
     List<CategoryDto> getCategories(CategorySearchData categorySearchData);
 
     @Transactional
-    void createCategory(CategoryDto dto);
+    CategoryDto createCategory(CategoryDto dto);
 
     @Transactional
     void deleteCategory(String code);

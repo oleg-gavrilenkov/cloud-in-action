@@ -14,10 +14,12 @@ import java.util.List;
 import javax.validation.Valid;
 import com.java.cloud.training.dto.product.ProductDto;
 import com.java.cloud.training.dto.product.UpdateProductDto;
+import com.java.cloud.training.payroll.ProductDtoAssembler;
 import com.java.cloud.training.service.ProductService;
 import com.java.cloud.training.service.data.ProductSearchData;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -38,6 +41,8 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductDtoAssembler productDtoAssembler;
 
     @Operation(summary = "Find product by code", description = "Returns a single product", tags = {"product"})
     @ApiResponses(value = {
@@ -77,10 +82,11 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "Not enough permissions to perform operation")
     })
     @PostMapping
-    public ResponseEntity<Void> createProduct(@Parameter(description = "Product to be created", required = true, schema = @Schema(implementation = ProductDto.class))
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public EntityModel<ProductDto> createProduct(@Parameter(description = "Product to be created", required = true, schema = @Schema(implementation = ProductDto.class))
                                           @Valid @RequestBody ProductDto productDto) {
-        productService.createProduct(productDto);
-        return new ResponseEntity(HttpStatus.CREATED);
+        ProductDto createdProductDto = productService.createProduct(productDto);
+        return productDtoAssembler.toModel(createdProductDto);
     }
 
     @Operation(summary = "Get all products", tags = {"product"})
